@@ -4,10 +4,12 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.http.ResponseEntity
+import org.springframework.http.client.ClientHttpResponse
 import org.springframework.web.client.RestClient
 import java.lang.Thread.sleep
 
 fun main() {
+
     val restClient: RestClient = RestClient.create();
 
     val url = Url("https://place.map.kakao.com/main/v/1619702502")
@@ -41,10 +43,16 @@ fun main() {
     } while (entity.statusCode == HttpStatus.OK)
 }
 
+private fun extracted(isOkStatus: Boolean, response: ClientHttpResponse) {
+    var isOkStatus1 = isOkStatus
+    isOkStatus1 = false
+    println("is Not Status OK ${response.statusCode}")
+}
+
 private fun isEmpty(entity: ResponseEntity<Dto>) =
     entity.body == null || entity.body!!.comment == null || entity.body!!.comment!!.list == null
 
-data class Url(var value: String) {
+private data class Url(var value: String) {
 
     var isFirstStatus = true
 
@@ -58,14 +66,14 @@ data class Url(var value: String) {
     }
 }
 
-data class Dto(val comment: DtoList?) {
+private data class Dto(val comment: DtoList?) {
     constructor() : this(null)
 }
 
-data class DtoList(val list: List<DtoComment>?) {
+private data class DtoList(val list: List<DtoComment>?) {
     constructor() : this(null)
 }
 
-data class DtoComment(val commentid: Long, val contents: String?) {
+private data class DtoComment(val commentid: Long, val contents: String?) {
     constructor() : this(-1, null)
 }
